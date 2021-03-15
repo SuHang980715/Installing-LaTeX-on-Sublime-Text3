@@ -1,0 +1,221 @@
+\documentclass{ctexart}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[colorlinks]{hyperref}
+
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage[T1]{fontenc}
+\renewcommand*\familydefault{\sfdefault}
+%% Only if the base font of the document is to be sans serif 
+
+\ctexset{
+  section/format = \Large\bfseries\raggedright
+}
+
+\lstset{
+  backgroundcolor = \color{lightgray!30},
+  keywordstyle    = \color{blue},
+  stringstyle     = \color{purple!40},
+  basicstyle      = {\small\ttfamily},
+  breaklines      = true,
+  tabsize         = 4,
+  gobble          = 2,
+  numbers         = left,
+  numberstyle     = \tiny,
+  frame           = single,
+  xleftmargin     = \ccwd,
+  numbersep       = \ccwd,
+%  emphstyle       = {\color{blue}\small\ttfamily},
+%  emph            = {mkdir,rmdir,sudo,mount,umount,rm},
+}
+
+\title{基于 TeXLive,使用 Sublime Text 3编写{\LaTeX}}
+\author{Su H.\thanks{\url{suhang980715@gmail.com}} \ \thanks{腾讯QQ群“{\LaTeX}技术交流5000人群”（群号：91940767）}}
+
+\begin{document}
+  
+\maketitle
+
+\begin{abstract}
+  该文档简单记录一下自己电脑（Windows10系统）上基于 TeXLive,使用 Sublime Text 3编写{\LaTeX}的过程，该过程是基于以下网址对于某些步骤的改进：
+  \begin{enumerate}
+    \item[(a)]
+    \url{https://www.cnblogs.com/fantacity/p/5100434.html}
+    % 
+    \item[(b)]
+    \url{https://blog.csdn.net/qazxswed807/article/details/51234834}
+  \end{enumerate}
+
+  \textbf{在安装前，请保证自己的网络可以登陆\href{https://github.com/}{GitHub}网站}
+
+  整个过程大约需要1-2小时。
+\end{abstract}
+% 
+\section{准备工作}
+% 
+\begin{enumerate}[leftmargin=*]
+\item[(a)]
+\textbf{下载 TeXLive}
+
+TeXLive是跨平台的{\LaTeX}工具套件，可以在 Linux、 Windows和 Mac OS下使用，包含了{\TeX}以及相关的程序。
+
+这里给出的 \href{https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/}{TeXLive}下载路径是清华镜像
+\footnote{即摘要中网址\href{https://www.cnblogs.com/fantacity/p/5100434.html}{(a)}给出的TeXLive第一种下载方式}
+选择 \texttt{texlive2019.iso}镜像文件
+\footnote{该网站会随着TeXLive版本的更新而放出对应的新版本镜像文件，如今是TeXLive2019版本}
+% 
+\item[(b)]
+\textbf{下载 Sublime Text 3}
+
+Sublime Text 2/3是一个跨平台的代码编辑器，同时支持 Windows、 Linux、 Mac OS等操作系统。它具有漂亮的用户界面和强大的功能，例如代码缩略图，Python的插件，代码段等，是我们选用编辑{\LaTeX}文本的编辑器。
+
+百度 Sublime Text进入官网即可下载 \href{https://www.sublimetext.com/3}{Sublime Text 3}。
+% 
+\item[(c)]
+\textbf{下载 Sumatra PDF}
+
+\href{https://www.sumatrapdfreader.org/download-free-pdf-viewer.html}{Sumatra PDF}是一种轻量级PDF阅读器，类型为开放软件，可以在官网上直接找到其下载方式，同时也提供源代码的下载，然而只能在Windows系统下使用。
+
+这里选用 Sumatra PDF作为PDF阅览器的原因是它可以实现{\LaTeX}代码的反向搜索，即双击PDF上的某个位置可以超链接返回{\LaTeX}对应位置，为查错带来便利并且提高了寻找源代码的效率。
+
+\end{enumerate}
+% 
+\section{安装 TeXLive、 Sublime Text和 Sumatra PDF}
+% 
+\begin{enumerate}[leftmargin=*]
+\item[(a)]
+\textbf{安装 TeXLive}
+
+将下载好后的TeXLive镜像文件解压，右键点击 \texttt{install-tl-windows}选择 \texttt{管理员权限安装}。
+
+安装时请自己选择路径
+\footnote{尽量选择默认路径，该镜像文件大小约3-3.5GB，若想节省C盘空间则可另寻路径进行安装}，
+配置选项时小白请全部选择默认选项，尽量保证安装的TeXLive具有全部内容。
+% 
+\item[(b)]
+\textbf{安装 Sublime Text 3和 Sumatra PDF}
+
+双击官网上下载的Sublime Text 3和 Sumatra PDF安装文件即可，这两个软件大小均在10MB左右，可以直接默认安装路径。
+
+安装时请选择 \texttt{Add to explorer context menu}，以便打开后续文件。
+
+请注意Sumatra PDF一定要安装在Program Files文件夹而不要安装在“用户”文件夹，否则后面无法进行。
+\end{enumerate}
+
+以上软件安装完毕后请记录安装路径以备后续环境配置时使用。
+% 
+\section{在 Sublime Text 3中安装 Package Control}
+% 
+由于某些原因，导致 Sublime Text安装插件的 
+\href{https://packagecontrol.io/}{官方网站}
+经常连接失败从而导致其插件管理 Package Control安装或使用失败
+\footnote{其原因可以参考 \url{https://blog.csdn.net/weixin_43948229/article/details/86495993}，但该网站提供的解决方法\textbf{无效}}，
+这也是摘要中给出的网址\textbf{没有更新的部分}。
+
+笔者在经过多次尝试后找到了一个所谓最简单的方法：
+\begin{enumerate}[leftmargin=*]
+\item[(1)]
+在\href{https://github.com/}{GitHub}网站上直接下载 \href{https://github.com/wbond/package_control}{Package Control插件}，解压后找到文件 \texttt{Package Control.sublime-settings}。
+% 
+\item[(2)]
+在 Sublime Text 3中打开 \texttt{Preferences->Browse Packages}对应的文件夹，回到上一级路径点开名为 \texttt{Installed Packages}的文件夹，将下载好的 \texttt{Package Control.sublime-settings}文件放入。
+% 
+\item[(3)]
+重启 Sublime Text 3，打开 \texttt{Preferences}可以发现显示 Package Control，说明安装成功。
+\end{enumerate}
+% 
+\section{在 Sublime Text 3中安装 LaTeX Tools等插件并配置}
+% 
+\begin{enumerate}[leftmargin=*]
+\item[(1)]
+\textbf{安装 LaTeX Tools插件}
+
+在 Sublime Text 3内按 \texttt{Ctrl+Shift+P}，输入 \texttt{install}，在窗口内选择 \texttt{Package Control: install package}。
+
+在跳出的窗口中输入 \texttt{latex}查找到 \texttt{LaTeX Tools}点击安装。
+% 
+\item[(2)]
+\textbf{配置 LaTeX Tools}
+
+选择 \texttt{Preferences->Browse Packages}进入文件夹，选择 \texttt{LaTeXTools}文件夹并进入，右键 \texttt{Open with Sublime Text}文件 \texttt{LaTeXTools.sublime-settings}。
+
+利用 \texttt{Ctrl+F}搜寻功能查找 \texttt{windows}，选择第二个结果（216行），在220行中将 \texttt{texpath}中的路径改为TeXLive安装路径，并参照219行给出的范例注意路径中的单斜杠变为双斜杠
+\footnote{若采取的是默认安装路径，则在220行引号内输入 \texttt{C:$\backslash \backslash$texlive$\backslash \backslash$2019$\backslash \backslash$bin$\backslash \backslash$win32;\$PATH}}。
+
+在222行的 \texttt{distro}后面的引号内改成 \texttt{texlive}。
+
+在224行的 \texttt{sumatra}后面的引号内输入Sumatra PDF的安装路径，书写规则同TeXLive
+\footnote{若采取的是默认安装路径，则输入 \texttt{C:$\backslash \backslash$Program Files$\backslash \backslash$SumatraPDF$\backslash \backslash$SumatraPDF.exe}}。
+
+利用 \texttt{Ctrl+F}搜寻功能查找 \texttt{builder}，选择位于386行的结果，将引号内内容改成 \texttt{simple}。
+
+按\texttt{Ctrl+S}保存该文件并关闭。
+% 
+\item[(3)]
+\textbf{安装 ConvertToUTF8插件}
+
+ConvertToUTF8插件是一款在 Sublime Text 3中可以识别中文的插件。
+
+类似安装 LaTeX Tools插件，在 Sublime Text 3内按 \texttt{Ctrl+Shift+P}，输入 \texttt{install}，在窗口内选择 \texttt{Package Control: install package}，输入 \texttt{Convert}查找到 \texttt{ConvertToUTF8}点击安装。
+\end{enumerate}
+% 
+\section{配置 Sumatra PDF}
+% 
+\begin{enumerate}[leftmargin=*]
+\item[(1)]
+\textbf{添加环境变量}
+
+右键点击 \texttt{我的电脑}，选择 \texttt{属性}，点击 \texttt{高级系统设置}，再点击下方的 \texttt{环境变量}并双击 \texttt{环境变量PATH}。
+
+新建环境变量，将\texttt{SumatraPDF.exe}所在安装目录输入并确定即可。
+% 
+\item[(2)]
+\textbf{配置 Sumatra PDF进行反向搜索}
+
+打开命令行，输入
+% 
+\begin{lstlisting}[language=tex]
+  sumatrapdf.exe -inverse-search "\"C:\Program Files\Sublime Text 3\sublime_text.exe\" \"\%f:%l\
+\end{lstlisting}
+
+关闭弹出来的Sumatra PDF窗口即可。
+\end{enumerate}
+% 
+\section{测试}
+% 
+新建一个{\TeX}文件，用 Sublime Text 3打开，将以下代码输入：
+% 
+\begin{lstlisting}[language=tex]
+  %!TEX program = xelatex
+  \documentclass[UTF8]{ctexart}
+  \begin{document}
+  Hello World!
+  \end{document}
+\end{lstlisting}
+
+按 \texttt{Ctrl+B}进行编译，编译成功，说明{\LaTeX}环境已搭建成功。
+% 
+\section{一些说明}
+\subsection{关于默认编译方法的选择}
+% 
+% 
+\subsection{关于自动补全}
+%
+在 Sublime Text 3内按 \texttt{Ctrl+Shift+P}，输入 \texttt{install}，在窗口内选择 \texttt{Package Control: install package}。
+
+在跳出的窗口中输入 \texttt{latex}查找到 \texttt{LaTeXing}和\texttt{LaTeXYZ}点击安装。
+% 
+\subsection{关于主题设置}
+%  
+本人比较喜爱的Sublime Text 3主题为\texttt{Solarized Space Predawn.sublime-text}。
+
+\end{document}
